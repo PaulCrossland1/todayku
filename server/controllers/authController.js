@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
-const { v4: uuidv4 } = require('uuid');
+function generateToken() {
+  return Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15);
+}
 
 // Register a new user
 async function register(req, res) {
@@ -23,7 +26,7 @@ async function register(req, res) {
     const passwordHash = await bcrypt.hash(password, salt);
     
     // Create verification token
-    const verificationToken = uuidv4();
+    const verificationToken = generateToken();
     const tokenExpiry = new Date();
     tokenExpiry.setHours(tokenExpiry.getHours() + 24); // 24 hours validity
     

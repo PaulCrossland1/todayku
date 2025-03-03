@@ -140,6 +140,7 @@ const Game = () => {
           <div className="difficulty">
             Difficulty: 
             <span className={`difficulty-${currentPuzzle && currentPuzzle.difficulty}`}>
+              {currentPuzzle && currentPuzzle.difficulty || 'Medium'}
             </span>
           </div>
           {gameStarted && <Timer time={time} isRunning={isRunning} />}

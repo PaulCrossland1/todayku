@@ -1,5 +1,18 @@
 FROM node:18-alpine
 
+# Install build dependencies for node-canvas
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    jpeg-dev \
+    cairo-dev \
+    giflib-dev \
+    pango-dev \
+    libtool \
+    autoconf \
+    automake
+
 WORKDIR /app
 
 # Install dependencies for both server and client
