@@ -15,7 +15,10 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 
-# Copy package files
+# Create directories for volumes
+RUN mkdir -p /app/data
+
+# Copy package files first for better caching
 COPY package*.json ./
 COPY client/package*.json ./client/
 
@@ -28,6 +31,9 @@ COPY . .
 
 # Build the React client
 RUN cd client && npm run build
+
+# Create volume for persistent data
+VOLUME ["/app/data"]
 
 # Expose the port
 EXPOSE 8080

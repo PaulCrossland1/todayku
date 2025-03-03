@@ -1,4 +1,14 @@
 /* Sudoku board container */
+:root {
+  --cell-border-light: rgba(93, 76, 70, 0.2);
+  --cell-border-thick: 3px;
+  --cell-border-thin: 1px;
+  --hover-opacity: 0.05;
+  --same-value-opacity: 0.1;
+}
+
+
+
 .sudoku-container {
   display: flex;
   flex-direction: column;
@@ -18,6 +28,7 @@
   max-width: 100%;
   aspect-ratio: 1 / 1;
   background-color: var(--secondaryBackground);
+  position: relative;
 }
 
 /* Sudoku row */
@@ -26,30 +37,89 @@
   grid-template-columns: repeat(9, 1fr);
 }
 
-/* Individual sudoku cell */
 .sudoku-cell {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: clamp(1rem, 3vw, 1.5rem);
-  border: 1px solid rgba(93, 76, 70, 0.2);
+  border: var(--cell-border-thin) solid var(--cell-border-light);
   cursor: pointer;
-  transition: 
-    background-color 0.2s ease, 
-    color 0.2s ease, 
-    transform 0.1s ease;
+  transition: all 0.2s ease-in-out;
   position: relative;
   user-select: none;
   font-weight: 500;
+  min-height: 40px;
 }
 
-/* 3x3 box demarcation */
-.sudoku-cell.right-edge {
+/* Add left border for first column */
+.sudoku-cell:first-child {
+  border-left: var(--cell-border-thick) solid var(--primary);
+}
+
+/* Enhance 3x3 grid borders */
+.sudoku-cell:nth-child(3n) {
+  border-right: var(--cell-border-thick) solid var(--primary);
+}
+
+.sudoku-row:nth-child(3n) .sudoku-cell {
+  border-bottom: var(--cell-border-thick) solid var(--primary);
+}
+
+/* Responsive breakpoints */
+@media (max-width: 480px) {
+  .sudoku-cell {
+    font-size: 14px;
+    min-height: 35px;
+  }
+  
+  .note-value {
+    font-size: 7px;
+  }
+}
+
+@media (max-width: 360px) {
+  .sudoku-cell {
+    font-size: 12px;
+    min-height: 30px;
+  }
+  
+  .note-value {
+    font-size: 6px;
+  }
+}
+
+/* Enhanced accessibility */
+.sudoku-cell:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+  z-index: 1;
+}
+
+/* Smooth transitions */
+.sudoku-cell {
+  transition: 
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    outline 0.2s ease;
+}
+
+/* 3x3 box demarcation with more precise targeting */
+.sudoku-cell:nth-child(3n) {
   border-right: 3px solid var(--primary);
 }
 
-.sudoku-cell.bottom-edge {
+.sudoku-row:nth-child(3n) .sudoku-cell {
   border-bottom: 3px solid var(--primary);
+}
+
+/* Ensure the last cells don't have extra borders */
+.sudoku-cell:last-child {
+  border-right: 1px solid rgba(93, 76, 70, 0.2);
+}
+
+.sudoku-row:last-child .sudoku-cell {
+  border-bottom: 1px solid rgba(93, 76, 70, 0.2);
 }
 
 /* Cell states */
@@ -117,8 +187,8 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: 
-    background-color 0.3s ease, 
+  transition:
+    background-color 0.3s ease,
     transform 0.1s ease;
   aspect-ratio: 1 / 1;
 }
