@@ -37,10 +37,21 @@ function scheduleJobs() {
   // Generate new puzzle every day at midnight
   schedule.scheduleJob('0 0 * * *', async function() {
     try {
+      console.log('Scheduled job: Creating new daily puzzle');
       await createDailyPuzzle();
-      console.log('New daily puzzle created');
+      console.log('New daily puzzle created successfully');
     } catch (error) {
-      console.error('Error creating daily puzzle:', error);
+      console.error('Error in scheduled puzzle creation:', error);
+      // Retry after 15 minutes if failed
+      setTimeout(async () => {
+        try {
+          console.log('Retrying puzzle creation');
+          await createDailyPuzzle();
+          console.log('Retry successful');
+        } catch (retryError) {
+          console.error('Retry also failed:', retryError);
+        }
+      }, 15 * 60 * 1000);
     }
   });
   
@@ -53,6 +64,32 @@ function scheduleJobs() {
       console.error('Error sending leaderboard emails:', error);
     }
   });
+  
+  console.log('All scheduled jobs have been set up');
+  
+  // Run createDailyPuzzle immediately to ensure we have today's puzzle
+  setTimeout(async () => {
+    try {
+      console.log('Checking for today\'s puzzle');
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Check if puzzle exists for today
+      const existingResult = await db.query(
+        'SELECT * FROM puzzles WHERE date = $1',
+        [today]
+      );
+      
+      if (existingResult.rows.length === 0) {
+        console.log('No puzzle for today, creating one now');
+        await createDailyPuzzle();
+        console.log('Created today\'s puzzle successfully');
+      } else {
+        console.log('Today\'s puzzle already exists');
+      }
+    } catch (error) {
+      console.error('Error checking/creating today\'s puzzle:', error);
+    }
+  }, 10000); // Wait 10 seconds after server start
 }
 
 // Send leaderboard emails
@@ -178,7 +215,7 @@ function generateLeaderboardHtml(date, leaderboard) {
           </tbody>
         </table>
         
-<div style="text-align: center; margin-top: 30px;">
+        <div style="text-align: center; margin-top: 30px;">
           <a href="https://todayku.com" class="button">Play Today's Puzzle</a>
         </div>
         

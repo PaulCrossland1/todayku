@@ -13,8 +13,11 @@ async function createDailyPuzzle() {
     );
     
     if (existingResult.rows.length > 0) {
+      console.log(`Puzzle for ${today} already exists`);
       return existingResult.rows[0];
     }
+    
+    console.log(`Generating new puzzle for ${today}`);
     
     // Generate new puzzle
     const { puzzle, solution } = generateSudoku();
@@ -28,6 +31,7 @@ async function createDailyPuzzle() {
       [today, JSON.stringify(puzzle), JSON.stringify(solution), difficulty]
     );
     
+    console.log(`Successfully created puzzle for ${today}`);
     return result.rows[0];
   } catch (error) {
     console.error('Error creating daily puzzle:', error);
@@ -40,6 +44,8 @@ async function getTodaysPuzzle() {
   const today = new Date().toISOString().split('T')[0];
   
   try {
+    console.log(`Getting puzzle for ${today}`);
+    
     // First check if puzzle exists
     let result = await db.query(
       'SELECT id, date, puzzle, difficulty FROM puzzles WHERE date = $1',
@@ -48,17 +54,33 @@ async function getTodaysPuzzle() {
     
     // If not, create a new one
     if (result.rows.length === 0) {
-      const newPuzzle = await createDailyPuzzle();
-      return {
-        id: newPuzzle.id,
-        date: newPuzzle.date,
-        puzzle: JSON.parse(newPuzzle.puzzle),
-        difficulty: newPuzzle.difficulty
-      };
+      console.log(`No puzzle found for ${today}, creating a new one`);
+      try {
+        const newPuzzle = await createDailyPuzzle();
+        return {
+          id: newPuzzle.id,
+          date: newPuzzle.date,
+          puzzle: JSON.parse(newPuzzle.puzzle),
+          difficulty: newPuzzle.difficulty
+        };
+      } catch (createError) {
+        console.error('Error creating puzzle in database:', createError);
+        // Fallback: generate puzzle directly without storing
+        console.log('Using fallback: generating puzzle without database storage');
+        const { puzzle, solution } = generateSudoku();
+        return {
+          id: 0,
+          date: today,
+          puzzle: puzzle,
+          difficulty: determineDifficulty(puzzle)
+        };
+      }
     }
     
     // Return puzzle data (but not solution)
     const puzzleData = result.rows[0];
+    console.log(`Retrieved puzzle id: ${puzzleData.id} for ${puzzleData.date}`);
+    
     return {
       id: puzzleData.id,
       date: puzzleData.date,
@@ -67,7 +89,15 @@ async function getTodaysPuzzle() {
     };
   } catch (error) {
     console.error('Error getting daily puzzle:', error);
-    throw error;
+    // Last resort fallback
+    console.log('Using emergency fallback: generating puzzle on the fly');
+    const { puzzle, solution } = generateSudoku();
+    return {
+      id: 0,
+      date: today,
+      puzzle: puzzle,
+      difficulty: 'medium'
+    };
   }
 }
 
