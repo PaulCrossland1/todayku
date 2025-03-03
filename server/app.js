@@ -12,26 +12,26 @@ const { scheduleJobs } = require('./services/emailService');
 const app = express();
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false // Disable CSP for development
+}));
 app.use(cors());
 app.use(express.json());
 
 // Schedule daily jobs (email sending, puzzle generation)
 scheduleJobs();
 
-// API routes
+// API routes - these must come before the catch-all route
 app.use('/api/auth', authRoutes);
 app.use('/api/puzzles', puzzleRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/users', userRoutes);
 
-// Serve static files from the React app in production
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Catch-all route - must come after API routes
 app.get('*', (req, res) => {
-  // Don't handle API routes with the catch-all
-  if (req.url.startsWith('/api/')) {
-    return next();
-  }
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 

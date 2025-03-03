@@ -11,7 +11,8 @@ RUN apk add --no-cache \
     pango-dev \
     libtool \
     autoconf \
-    automake
+    automake \
+    curl
 
 WORKDIR /app
 
@@ -31,6 +32,10 @@ COPY . .
 
 # Build the React client
 RUN cd client && npm run build
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/ || exit 1
 
 # Create volume for persistent data
 VOLUME ["/app/data"]

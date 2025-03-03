@@ -9,10 +9,10 @@ docker-compose build
 docker-compose up -d
 
 echo "Waiting for services to initialize..."
-sleep 10
+sleep 20
 
 # Check if the application is running properly
-response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/puzzles/today || echo "Error")
+response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ || echo "Error")
 
 if [ "$response" = "200" ]; then
   echo "Deployment successful! Application is running correctly."

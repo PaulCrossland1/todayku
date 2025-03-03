@@ -4,12 +4,18 @@ const path = require('path');
 
 async function initializeDatabase() {
   // Create a connection to PostgreSQL
+  console.log('Connecting to database with URL:', process.env.DATABASE_URL);
+  
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 
   try {
+    console.log('Testing database connection...');
+    await pool.query('SELECT NOW()');
+    console.log('Database connection successful!');
+    
     console.log('Checking database setup...');
     
     // Check if tables exist

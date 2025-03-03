@@ -8,9 +8,11 @@ const PORT = process.env.PORT || 8080;
 // Initialize database and then start server
 async function startServer() {
   try {
-    // Wait for database to be ready
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    console.log('Waiting for database to be ready...');
+    // Increase wait time for database readiness
+    await new Promise(resolve => setTimeout(resolve, 15000));
     
+    console.log('Initializing database...');
     // Initialize database
     await initializeDatabase();
     
@@ -20,6 +22,7 @@ async function startServer() {
     // Start the server
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      console.log('Ready to accept connections!');
     });
   } catch (error) {
     console.error('Failed to start server:', error);
