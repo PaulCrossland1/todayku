@@ -1,31 +1,32 @@
 {
   "name": "todayku",
   "version": "1.0.0",
-  "description": "Daily competitive sudoku platform",
+  "description": "A daily competitive sudoku game",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-    "client": "cd client && npm start",
-    "dev:all": "concurrently \"npm run dev\" \"npm run client\"",
     "build": "cd client && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install-client": "cd client && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "npm run install-client"
   },
-  "keywords": ["sudoku", "daily", "puzzle", "game"],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.11.3",
-    "jsonwebtoken": "^9.0.2",
-    "bcrypt": "^5.1.1",
-    "node-schedule": "^2.1.1",
-    "nodemailer": "^6.9.7",
+    "bcryptjs": "^2.4.3",
+    "canvas": "^2.11.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "node-schedule": "^2.1.1",
+    "nodemailer": "^6.9.1",
+    "pg": "^8.9.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "concurrently": "^8.2.2"
-  }
+    "nodemon": "^2.0.21"
+  },
+  "author": "",
+  "license": "MIT"
 }
