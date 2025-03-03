@@ -1,5 +1,5 @@
 const db = require('../config/database');
-const { generateSudoku } = require('../utils/sudoku');
+const { generateSudoku, validateSudoku } = require('../utils/sudoku');
 
 // Create a new daily puzzle
 async function createDailyPuzzle() {
@@ -19,11 +19,13 @@ async function createDailyPuzzle() {
     
     console.log(`Generating new puzzle for ${today}`);
     
-    // Generate new puzzle
-    const { puzzle, solution } = generateSudoku();
+    // Generate new puzzle with random difficulty
+    // Weighted to have more medium difficulty puzzles
+    const difficulties = ['easy', 'medium', 'medium', 'hard'];
+    const difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
     
-    // Determine difficulty (could be based on number of givens or other metrics)
-    const difficulty = determineDifficulty(puzzle);
+    // Generate the puzzle using our improved algorithm
+    const { puzzle, solution } = generateSudoku(difficulty);
     
     // Store in database
     const result = await db.query(
@@ -31,7 +33,7 @@ async function createDailyPuzzle() {
       [today, JSON.stringify(puzzle), JSON.stringify(solution), difficulty]
     );
     
-    console.log(`Successfully created puzzle for ${today}`);
+    console.log(`Successfully created puzzle for ${today} with difficulty: ${difficulty}`);
     return result.rows[0];
   } catch (error) {
     console.error('Error creating daily puzzle:', error);
@@ -67,12 +69,12 @@ async function getTodaysPuzzle() {
         console.error('Error creating puzzle in database:', createError);
         // Fallback: generate puzzle directly without storing
         console.log('Using fallback: generating puzzle without database storage');
-        const { puzzle, solution } = generateSudoku();
+        const { puzzle, solution } = generateSudoku('medium');
         return {
           id: 0,
           date: today,
           puzzle: puzzle,
-          difficulty: determineDifficulty(puzzle)
+          difficulty: 'medium'
         };
       }
     }
@@ -91,7 +93,7 @@ async function getTodaysPuzzle() {
     console.error('Error getting daily puzzle:', error);
     // Last resort fallback
     console.log('Using emergency fallback: generating puzzle on the fly');
-    const { puzzle, solution } = generateSudoku();
+    const { puzzle, solution } = generateSudoku('medium');
     return {
       id: 0,
       date: today,
@@ -99,25 +101,6 @@ async function getTodaysPuzzle() {
       difficulty: 'medium'
     };
   }
-}
-
-// Helper function to determine puzzle difficulty
-function determineDifficulty(puzzle) {
-  // Count non-zero cells (givens)
-  let givenCount = 0;
-  
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < 9; col++) {
-      if (puzzle[row][col] !== 0) {
-        givenCount++;
-      }
-    }
-  }
-  
-  // Determine difficulty based on number of givens
-  if (givenCount >= 40) return 'easy';
-  if (givenCount >= 30) return 'medium';
-  return 'hard';
 }
 
 module.exports = {

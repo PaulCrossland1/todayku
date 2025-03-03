@@ -1,42 +1,62 @@
 /* Timer container */
 .timer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  min-width: 110px;
+  position: relative;
+  overflow: hidden;
+}
+
+.timer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.timer.running::before {
+  opacity: 1;
+}
+
+/* Timer display */
+.timer-display {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s ease;
+}
+
+/* Timer status text */
+.timer-status {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 0.2rem;
+}
+
+/* Running animation for the timer */
+.timer.running .timer-display {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
   }
-  
-  /* Timer display */
-  .timer-display {
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: 'Roboto Mono', monospace;
-    letter-spacing: 0.05em;
+  50% {
+    opacity: 0.8;
   }
-  
-  /* Timer status text */
-  .timer-status {
-    font-size: 0.8rem;
-    opacity: 0.7;
-    margin-top: 0.2rem;
+  100% {
+    opacity: 1;
   }
-  
-  /* Running animation */
-  .timer.running .timer-display {
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
+}
