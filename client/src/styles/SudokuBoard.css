@@ -1,140 +1,155 @@
 /* Sudoku board container */
 .sudoku-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    max-width: 540px;
-    margin: 0 auto;
-  }
-  
-  /* Controls above the board */
-  .sudoku-controls {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-  
-  /* Note toggle button */
-  .note-toggle {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  /* Sudoku board */
-  .sudoku-board {
-    display: grid;
-    grid-template-rows: repeat(9, 1fr);
-    border: 2px solid;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    aspect-ratio: 1 / 1;
-  }
-  
-  /* Sudoku row */
-  .sudoku-row {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-  }
-  
-  /* Individual sudoku cell */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 540px;
+  margin: 0 auto;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Sudoku board */
+.sudoku-board {
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  border: 3px solid var(--primary);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--secondaryBackground);
+}
+
+/* Sudoku row */
+.sudoku-row {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+}
+
+/* Individual sudoku cell */
+.sudoku-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid rgba(93, 76, 70, 0.2);
+  cursor: pointer;
+  transition: 
+    background-color 0.2s ease, 
+    color 0.2s ease, 
+    transform 0.1s ease;
+  position: relative;
+  user-select: none;
+  font-weight: 500;
+}
+
+/* 3x3 box demarcation */
+.sudoku-cell.right-edge {
+  border-right: 3px solid var(--primary);
+}
+
+.sudoku-cell.bottom-edge {
+  border-bottom: 3px solid var(--primary);
+}
+
+/* Cell states */
+.sudoku-cell:hover {
+  background-color: rgba(93, 76, 70, 0.05);
+}
+
+.sudoku-cell.selected {
+  background-color: var(--primary);
+  color: var(--secondaryBackground);
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+.sudoku-cell.same-value {
+  background-color: rgba(93, 76, 70, 0.1);
+}
+
+/* Original vs user values */
+.original-value {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.user-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Notes styling */
+.notes-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.note-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  color: var(--textSecondary);
+}
+
+.note-value.active {
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* Number controls */
+.number-controls {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.number-button {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 
+    background-color 0.3s ease, 
+    transform 0.1s ease;
+  aspect-ratio: 1 / 1;
+}
+
+.number-button:hover {
+  transform: scale(1.05);
+}
+
+.number-toggle {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
   .sudoku-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    border: 1px solid #e0e0e0;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-    position: relative;
-    user-select: none;
+    font-size: 16px;
   }
   
-  /* Cell highlighting */
-  .sudoku-cell.selected {
-    font-weight: bold;
-  }
-  
-  .sudoku-cell.same-value {
-    font-weight: normal;
-  }
-  
-  /* Border styles for 3x3 boxes */
-  .sudoku-cell.right-edge {
-    border-right-width: 2px;
-  }
-  
-  .sudoku-cell.bottom-edge {
-    border-bottom-width: 2px;
-  }
-  
-  /* Original vs. user-entered values */
-  .original-value {
-    font-weight: bold;
-  }
-  
-  .user-value {
-    font-weight: normal;
-  }
-  
-  /* Notes container within a cell */
-  .notes-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* Individual note value */
   .note-value {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(0.5rem, 1vw, 0.7rem);
+    font-size: 8px;
   }
-  
-  /* Number controls for mobile */
-  .number-controls {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
-  @media (min-width: 768px) {
-    .number-controls {
-      display: none;
-    }
-  }
-  
-  /* Number button */
-  .number-button {
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, color 0.3s;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 480px) {
-    .sudoku-cell {
-      font-size: 16px;
-    }
-    
-    .note-value {
-      font-size: 8px;
-    }
-  }
+}
+
+/* Accessibility */
+.sudoku-cell:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}

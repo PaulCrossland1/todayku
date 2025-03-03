@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-# Install build dependencies for node-canvas
+# Install build dependencies
 RUN apk add --no-cache \
     python3 \
     make \
@@ -15,13 +15,15 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 
-# Install dependencies for both server and client
+# Copy package files
 COPY package*.json ./
 COPY client/package*.json ./client/
+
+# Install dependencies
 RUN npm install
 RUN cd client && npm install
 
-# Copy source code
+# Copy entire project
 COPY . .
 
 # Build the React client
