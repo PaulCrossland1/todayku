@@ -73,68 +73,81 @@ const UIModule = (function() {
   function setupEventListeners() {
     console.log("Setting up UI event listeners");
     
-    // Start button
+    // CRITICAL FIX: Start button - Use onclick property instead of addEventListener
     if (elements.startButton) {
-      console.log("Adding click event to start button");
-      elements.startButton.addEventListener('click', function() {
+      console.log("Adding click event to start button in UI module");
+      elements.startButton.onclick = function(e) {
+        if (e) e.preventDefault(); // Prevent any default behavior
         console.log("Start button clicked in UI module");
         hideModal(elements.welcomeModal);
         showGameBoard();
         
         if (callbacks.onGameStart && typeof callbacks.onGameStart === 'function') {
+          console.log("Calling onGameStart callback");
           callbacks.onGameStart();
+        } else {
+          console.error("onGameStart callback not defined or not a function");
         }
-      });
+        
+        // Return false to prevent any other handlers
+        return false;
+      };
     } else {
       console.error("Start button element not found in UI module");
     }
     
-    // Number pad buttons
+    // CRITICAL FIX: Number pad buttons - Use direct onclick for better compatibility
     if (elements.numberPad) {
-      elements.numberPad.addEventListener('click', function(e) {
-        if (e.target.classList.contains('number-btn')) {
-          const value = parseInt(e.target.dataset.value, 10);
+      const numberButtons = elements.numberPad.querySelectorAll('.number-btn');
+      numberButtons.forEach(button => {
+        button.onclick = function() {
+          const value = parseInt(this.dataset.value, 10);
+          console.log("Number button clicked:", value);
           
           if (callbacks.onNumberInput && typeof callbacks.onNumberInput === 'function') {
             callbacks.onNumberInput(value);
           }
-        }
+          
+          return false;
+        };
       });
     }
     
     // Copy results button
     if (elements.copyResultsButton) {
-      elements.copyResultsButton.addEventListener('click', function() {
+      elements.copyResultsButton.onclick = function() {
         if (callbacks.onCopyResults && typeof callbacks.onCopyResults === 'function') {
           callbacks.onCopyResults();
         }
-      });
+        return false;
+      };
     }
     
     // Share results button
     if (elements.shareResultsButton) {
-      elements.shareResultsButton.addEventListener('click', function() {
+      elements.shareResultsButton.onclick = function() {
         if (callbacks.onShareResults && typeof callbacks.onShareResults === 'function') {
           callbacks.onShareResults();
         }
-      });
+        return false;
+      };
     }
     
     // Play again button
     if (elements.playAgainButton) {
-      elements.playAgainButton.addEventListener('click', function() {
+      elements.playAgainButton.onclick = function() {
         hideModal(elements.completionModal);
-      });
+        return false;
+      };
     }
     
     // Try again button for game over
     if (elements.tryAgainButton) {
-      elements.tryAgainButton.addEventListener('click', function() {
+      elements.tryAgainButton.onclick = function() {
         hideModal(elements.gameOverModal);
-      });
+        return false;
+      };
     }
-    
-    // Keyboard support - Removed since we're using touch UI only
   }
   
   /**
@@ -194,7 +207,12 @@ const UIModule = (function() {
    * Create the game board cells
    */
   function createGameBoard(gameBoard) {
-    if (!elements.gameBoard) return;
+    if (!elements.gameBoard) {
+      console.error("Game board element not found!");
+      return;
+    }
+    
+    console.log("Creating game board with", gameBoard.length, "rows");
     
     // Clear existing cells
     elements.gameBoard.innerHTML = '';
@@ -214,18 +232,21 @@ const UIModule = (function() {
           cell.classList.add('given');
         }
         
-        // Add cell selection event
-        cell.addEventListener('click', function() {
-          if (!cell.classList.contains('given')) {
+        // Add cell selection event - Use onclick for more reliable handling
+        cell.onclick = function() {
+          if (!this.classList.contains('given')) {
             if (callbacks.onCellSelect && typeof callbacks.onCellSelect === 'function') {
               callbacks.onCellSelect(row, col);
             }
           }
-        });
+          return false;
+        };
         
         elements.gameBoard.appendChild(cell);
       }
     }
+    
+    console.log("Game board created with", elements.gameBoard.children.length, "cells");
   }
   
   /**
@@ -342,6 +363,40 @@ const UIModule = (function() {
   /**
    * Show a notification/toast message
    */
+  function showNotification(message, type = 'info', duration = 3000) {
+    // Remove any existing notification
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+      document.body.removeChild(existingNotification);
+    }
+    
+    // Create new notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 10);
+    
+    // Auto-hide after duration
+    setTimeout(() => {
+      notification.classList.remove('show');
+      
+      // Remove from DOM after animation completes
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, duration);
+    
+    return notification;
+  }
   
   // Public methods
   return {
@@ -359,11 +414,12 @@ const UIModule = (function() {
         gameContainer: !!elements.gameContainer
       });
       
+      // Set event callbacks first, before setting up listeners
+      callbacks = { ...callbacks, ...config };
+      console.log("Callbacks set:", Object.keys(callbacks).filter(key => !!callbacks[key]));
+      
       setupEventListeners();
       setCurrentDate();
-      
-      // Set event callbacks
-      callbacks = { ...callbacks, ...config };
       
       // Initialize confetti
       if (typeof ConfettiModule !== 'undefined') {
@@ -441,8 +497,7 @@ const UIModule = (function() {
      * Show a notification/toast message
      */
     showNotification: function(message, type = 'info', duration = 3000) {
-      showNotification(message, type, duration);
+      return showNotification(message, type, duration);
     }
   };
-}
-)();
+})();

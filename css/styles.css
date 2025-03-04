@@ -59,9 +59,21 @@ html, body {
 
 body {
   font-family: var(--font-primary);
-  background-color: var(--color-background);
+  background-color: var(--color-neutral-100);
   color: var(--color-neutral-800);
   line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* App Container for overall layout */
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--color-neutral-100);
 }
 
 /* Typography */
@@ -174,13 +186,15 @@ p {
 /* Game Container */
 .game-container {
   display: none;
-  height: 100vh;
-  max-height: 100vh;
-  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
   padding: var(--spacing-md);
+  height: auto;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-background);
 }
 
 .game-header {
@@ -236,13 +250,10 @@ p {
   gap: 1px;
   background-color: var(--color-neutral-500);
   border: 2px solid var(--color-neutral-700);
-  margin-bottom: var(--spacing-md);
-  flex-grow: 1;
-  aspect-ratio: 1/1;
-  max-height: calc(100vh - 180px);
   margin: 0 auto;
   width: 100%;
-  max-width: min(100%, calc(100vh - 180px));
+  aspect-ratio: 1/1;
+  max-width: 500px;
 }
 
 .cell {
@@ -421,6 +432,16 @@ p {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+  .app-container {
+    padding: 0;
+  }
+  
+  .game-container {
+    width: 100%;
+    min-height: 100vh;
+    padding: var(--spacing-sm);
+  }
+  
   .cell {
     font-size: 1.2rem;
   }
@@ -432,6 +453,7 @@ p {
   
   .modal-content {
     padding: var(--spacing-lg);
+    width: 85%;
   }
   
   h1 {

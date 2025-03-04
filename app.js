@@ -20,24 +20,36 @@
     UIModule.init({
       onCellSelect: handleCellSelect,
       onNumberInput: handleNumberInput,
-      onGameStart: startGame,
+      onGameStart: startGame,  // This will be called from UI module
       onCopyResults: copyResults,
       onShareResults: shareResults,
       onGameOver: handleGameOver
     });
     
-    // Directly add event listener to the start button as a backup
+    // CRITICAL FIX: Directly add event listener to the start button with direct game initialization
     const startButton = document.getElementById('start-game');
     if (startButton) {
-      console.log("Start button found, adding click event listener");
-      startButton.addEventListener('click', function() {
-        console.log("Start button clicked");
-        document.getElementById('welcome-modal').classList.remove('active');
-        document.getElementById('game-container').style.display = 'flex';
+      console.log("Start button found, adding direct click event listener");
+      startButton.onclick = function(e) {
+        if (e) e.preventDefault(); // Prevent any default behavior
+        console.log("Start button clicked directly");
+        
+        // Hide welcome modal
+        const welcomeModal = document.getElementById('welcome-modal');
+        if (welcomeModal) welcomeModal.classList.remove('active');
+        
+        // Show game container
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) gameContainer.style.display = 'flex';
+        
+        // Start the game directly
         startGame();
-      });
+        
+        // Return false to prevent any other handlers
+        return false;
+      };
     } else {
-      console.error("Start button not found!");
+      console.error("Start button not found in DOM!");
     }
     
     // Check if there's a saved game
@@ -56,6 +68,11 @@
    */
   function startGame() {
     console.log("Starting new game");
+    
+    if (gameStarted) {
+      console.log("Game already started, ignoring duplicate start");
+      return;
+    }
     
     // Get current UTC date for display
     const now = new Date();
