@@ -444,3 +444,5 @@ const UIModule = (function() {
       showNotification(message, type, duration);
     }
   };
+}
+)();
