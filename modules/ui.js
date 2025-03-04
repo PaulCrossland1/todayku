@@ -9,6 +9,7 @@ const UIModule = (function() {
   let elements = {
     welcomeModal: null,
     completionModal: null,
+    gameOverModal: null,
     gameContainer: null,
     gameBoard: null,
     numberPad: null,
@@ -16,13 +17,17 @@ const UIModule = (function() {
     startButton: null,
     currentDateElem: null,
     completionDateElem: null,
+    gameOverDateElem: null,
     gameNumberElem: null,
+    gameOverNumberElem: null,
     finalTimeElem: null,
     performanceRatingElem: null,
     shareTextElem: null,
     copyResultsButton: null,
     shareResultsButton: null,
-    playAgainButton: null
+    playAgainButton: null,
+    tryAgainButton: null,
+    confettiCanvas: null
   };
   
   // Event callbacks
@@ -31,7 +36,8 @@ const UIModule = (function() {
     onNumberInput: null,
     onGameStart: null,
     onCopyResults: null,
-    onShareResults: null
+    onShareResults: null,
+    onGameOver: null
   };
   
   /**
@@ -40,6 +46,7 @@ const UIModule = (function() {
   function cacheElements() {
     elements.welcomeModal = document.getElementById('welcome-modal');
     elements.completionModal = document.getElementById('completion-modal');
+    elements.gameOverModal = document.getElementById('game-over-modal');
     elements.gameContainer = document.getElementById('game-container');
     elements.gameBoard = document.getElementById('game-board');
     elements.numberPad = document.getElementById('number-pad');
@@ -47,13 +54,17 @@ const UIModule = (function() {
     elements.startButton = document.getElementById('start-game');
     elements.currentDateElem = document.getElementById('current-date');
     elements.completionDateElem = document.getElementById('completion-date');
+    elements.gameOverDateElem = document.getElementById('game-over-date');
     elements.gameNumberElem = document.getElementById('game-number');
+    elements.gameOverNumberElem = document.getElementById('game-over-number');
     elements.finalTimeElem = document.getElementById('final-time');
     elements.performanceRatingElem = document.getElementById('performance-rating');
     elements.shareTextElem = document.getElementById('share-text');
     elements.copyResultsButton = document.getElementById('copy-results');
     elements.shareResultsButton = document.getElementById('share-results');
     elements.playAgainButton = document.getElementById('play-again');
+    elements.tryAgainButton = document.getElementById('try-again');
+    elements.confettiCanvas = document.getElementById('confetti-canvas');
   }
   
   /**
@@ -116,22 +127,14 @@ const UIModule = (function() {
       });
     }
     
-    // Keyboard support
-    document.addEventListener('keydown', function(e) {
-      // Number keys 1-9
-      if (e.key >= '1' && e.key <= '9') {
-        if (callbacks.onNumberInput && typeof callbacks.onNumberInput === 'function') {
-          callbacks.onNumberInput(parseInt(e.key, 10));
-        }
-      }
-      
-      // Delete or Backspace for clearing
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (callbacks.onNumberInput && typeof callbacks.onNumberInput === 'function') {
-          callbacks.onNumberInput(0);
-        }
-      }
-    });
+    // Try again button for game over
+    if (elements.tryAgainButton) {
+      elements.tryAgainButton.addEventListener('click', function() {
+        hideModal(elements.gameOverModal);
+      });
+    }
+    
+    // Keyboard support - Removed since we're using touch UI only
   }
   
   /**
@@ -157,20 +160,33 @@ const UIModule = (function() {
    */
   function showGameBoard() {
     if (elements.gameContainer) {
-      elements.gameContainer.style.display = 'block';
+      elements.gameContainer.style.display = 'flex'; // Changed to flex for better layout
     }
   }
   
   /**
-   * Set the current date in welcome modal
+   * Set the current date in all modals
    */
   function setCurrentDate() {
-    if (elements.currentDateElem && elements.completionDateElem) {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = new Date().toLocaleDateString(undefined, options);
-      
+    // Use local date format for display but ensure it's consistent with UTC date for puzzles
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = new Date().toLocaleDateString(undefined, options);
+    
+    // Also get UTC date for logging
+    const utcDate = new Date();
+    const utcDateStr = `${utcDate.getUTCFullYear()}-${utcDate.getUTCMonth() + 1}-${utcDate.getUTCDate()}`;
+    console.log("Setting date display. UTC date for puzzles:", utcDateStr);
+    
+    if (elements.currentDateElem) {
       elements.currentDateElem.textContent = dateStr;
+    }
+    
+    if (elements.completionDateElem) {
       elements.completionDateElem.textContent = dateStr;
+    }
+    
+    if (elements.gameOverDateElem) {
+      elements.gameOverDateElem.textContent = dateStr;
     }
   }
   
@@ -213,19 +229,26 @@ const UIModule = (function() {
   }
   
   /**
-   * Update a cell's value
+   * Update a cell's value and handle error animation
    */
-  function updateCell(row, col, value, conflict = false) {
+  function updateCell(row, col, value, conflict = false, isError = false) {
     const cell = elements.gameBoard.querySelector(`[data-row="${row}"][data-col="${col}"]`);
     
     if (cell) {
+      // Remove any existing error class
+      cell.classList.remove('error');
+      
+      // Update the cell value
       cell.textContent = value === 0 ? '' : value;
       
-      // Add/remove conflict class
-      if (conflict) {
-        cell.classList.add('conflict');
-      } else {
-        cell.classList.remove('conflict');
+      if (isError) {
+        // Trigger error animation
+        cell.classList.add('error');
+        
+        // Remove error class after animation completes
+        setTimeout(() => {
+          cell.classList.remove('error');
+        }, 500);
       }
     }
   }
@@ -261,11 +284,22 @@ const UIModule = (function() {
   }
   
   /**
-   * Update the timer display
+   * Update the timer display and handle color changes
    */
-  function updateTimer(timeStr) {
+  function updateTimer(timeStr, timerClass, forceUpdate = false) {
     if (elements.timerDisplay) {
       elements.timerDisplay.textContent = timeStr;
+      
+      // Only update classes if needed
+      if (forceUpdate || !elements.timerDisplay.classList.contains(timerClass)) {
+        // Remove all timer classes
+        elements.timerDisplay.classList.remove('warning', 'danger', 'complete');
+        
+        // Add new class if provided
+        if (timerClass) {
+          elements.timerDisplay.classList.add(timerClass);
+        }
+      }
     }
   }
   
@@ -294,30 +328,20 @@ const UIModule = (function() {
   }
   
   /**
+   * Display game over modal
+   */
+  function showGameOver(gameNumber) {
+    if (elements.gameOverNumberElem) {
+      elements.gameOverNumberElem.textContent = gameNumber;
+    }
+    
+    // Show modal
+    showModal(elements.gameOverModal);
+  }
+  
+  /**
    * Show a notification/toast message
    */
-  function showNotification(message, type = 'info', duration = 3000) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    
-    // Add to document
-    document.body.appendChild(notification);
-    
-    // Show notification
-    setTimeout(() => {
-      notification.classList.add('show');
-    }, 10);
-    
-    // Remove after duration
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, duration);
-  }
   
   // Public methods
   return {
@@ -325,12 +349,26 @@ const UIModule = (function() {
      * Initialize the UI
      */
     init: function(config = {}) {
+      console.log("Initializing UI Module");
       cacheElements();
+      
+      // Debug check for elements
+      console.log("UI Elements found:", {
+        welcomeModal: !!elements.welcomeModal,
+        startButton: !!elements.startButton,
+        gameContainer: !!elements.gameContainer
+      });
+      
       setupEventListeners();
       setCurrentDate();
       
       // Set event callbacks
       callbacks = { ...callbacks, ...config };
+      
+      // Initialize confetti
+      if (typeof ConfettiModule !== 'undefined') {
+        ConfettiModule.init();
+      }
       
       // Check if Web Share API is available
       if (!ShareModule.isShareAvailable() && elements.shareResultsButton) {
@@ -355,15 +393,15 @@ const UIModule = (function() {
     /**
      * Update the timer display
      */
-    updateTimer: function(timeStr) {
-      updateTimer(timeStr);
+    updateTimer: function(timeStr, timerClass, forceUpdate = false) {
+      updateTimer(timeStr, timerClass, forceUpdate);
     },
     
     /**
      * Update a cell's value
      */
-    updateCell: function(row, col, value, conflict = false) {
-      updateCell(row, col, value, conflict);
+    updateCell: function(row, col, value, conflict = false, isError = false) {
+      updateCell(row, col, value, conflict, isError);
     },
     
     /**
@@ -381,10 +419,22 @@ const UIModule = (function() {
     },
     
     /**
-     * Show completion results modal
+     * Show completion results modal with confetti
      */
     showCompletionResults: function(gameNumber, timeStr, performanceRating, shareText) {
+      // Start confetti animation
+      if (typeof ConfettiModule !== 'undefined') {
+        ConfettiModule.start();
+      }
+      
       showCompletionResults(gameNumber, timeStr, performanceRating, shareText);
+    },
+    
+    /**
+     * Show game over modal
+     */
+    showGameOver: function(gameNumber) {
+      showGameOver(gameNumber);
     },
     
     /**
@@ -394,4 +444,5 @@ const UIModule = (function() {
       showNotification(message, type, duration);
     }
   };
-})();
+}
+)();

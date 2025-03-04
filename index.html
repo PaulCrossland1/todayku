@@ -1,17 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZND823DX2R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZND823DX2R');
-</script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Todayku - Daily Sudoku Challenge</title>
   <meta name="description" content="A daily, lightweight Sudoku puzzle designed for quick play, virality, and social sharing.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +28,7 @@
   </div>
   
   <!-- Game Container -->
-  <main id="game-container">
+  <main id="game-container" class="game-container">
     <header class="game-header">
       <div class="logo">Todayku</div>
       <div id="timer" class="timer">00:00</div>
@@ -58,9 +49,22 @@
       <button class="number-btn" data-value="7">7</button>
       <button class="number-btn" data-value="8">8</button>
       <button class="number-btn" data-value="9">9</button>
-      <button class="number-btn clear" data-value="0">Clear</button>
     </div>
   </main>
+  
+  <!-- Game Over Modal -->
+  <div id="game-over-modal" class="modal">
+    <div class="modal-content">
+      <h2>Time's Up!</h2>
+      <p id="game-over-date" class="date">March 5, 2025</p>
+      <div class="results">
+        <div class="game-number">Todayku #<span id="game-over-number">1</span></div>
+        <p>You've reached the time limit of 2:30.</p>
+        <p>Try again tomorrow for a new challenge!</p>
+      </div>
+      <button id="try-again" class="btn secondary">Try Again Tomorrow</button>
+    </div>
+  </div>
   
   <!-- Completion Modal -->
   <div id="completion-modal" class="modal">
@@ -86,12 +90,16 @@
     </div>
   </div>
   
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+  
   <!-- Scripts -->
   <script src="js/modules/puzzle.js"></script>
   <script src="js/modules/timer.js"></script>
   <script src="js/modules/storage.js"></script>
   <script src="js/modules/share.js"></script>
   <script src="js/modules/ui.js"></script>
-  <script src="js/app.js" defer></script>
+  <script src="js/modules/confetti.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
