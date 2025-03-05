@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Todayku - Daily Sudoku Puzzle</title>
-    <meta name="description" content="Play the daily Sudoku puzzle. A new, easy Sudoku challenge every day!">
+    <meta name="description" content="Todayku - A daily sudoku puzzle game that's quick and fun to play.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://todayku.day/">
+    <meta property="og:title" content="Todayku - Daily Sudoku Challenge">
+    <meta property="og:description" content="Play the daily sudoku puzzle. Get your daily brain exercise in just a few minutes!">
+    <meta property="og:image" content="https://todayku.day/og-image.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://todayku.day/">
+    <meta name="twitter:title" content="Todayku - Daily Sudoku Challenge">
+    <meta name="twitter:description" content="Play the daily sudoku puzzle. Get your daily brain exercise in just a few minutes!">
+    <meta name="twitter:image" content="https://todayku.day/og-image.png">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     
-    <!-- Manifest for PWA -->
+    <!-- PWA Support -->
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    
+    <title>Todayku - Daily Sudoku Challenge</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,136 +37,65 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="stylesheet.css">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Todayku - Daily Sudoku Puzzle">
-    <meta property="og:description" content="Play today's sudoku puzzle and share your time!">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://todayku.com">
-    <meta property="og:image" content="https://todayku.com/og-image.png">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Todayku - Daily Sudoku Puzzle">
-    <meta name="twitter:description" content="Play today's sudoku puzzle and share your time!">
-    <meta name="twitter:image" content="https://todayku.com/og-image.png">
 </head>
 <body>
     <div class="game-container">
-        <!-- Game Header -->
         <div class="game-header">
             <h1>TODAYKU</h1>
-            <div class="game-timer" id="timer">00:00</div>
+            <div class="timer" id="timer">00:00</div>
         </div>
         
-        <!-- Game Date -->
         <p class="game-date" id="game-date"></p>
         
-        <!-- Game Body -->
         <div class="game-body">
-            <!-- Sudoku Grid -->
-            <div class="sudoku-container">
-                <div class="sudoku-grid" id="sudoku-grid"></div>
+            <div class="sudoku-container" id="sudoku-container">
+                <!-- Sudoku grid will be generated here -->
             </div>
             
-            <!-- Number Pad (visible on mobile and desktop) -->
-            <div class="number-pad" id="number-pad">
-                <button class="number-key" data-value="1">1</button>
-                <button class="number-key" data-value="2">2</button>
-                <button class="number-key" data-value="3">3</button>
-                <button class="number-key" data-value="4">4</button>
-                <button class="number-key" data-value="5">5</button>
-                <button class="number-key" data-value="6">6</button>
-                <button class="number-key" data-value="7">7</button>
-                <button class="number-key" data-value="8">8</button>
-                <button class="number-key" data-value="9">9</button>
-                <button class="number-key delete-key" data-value="delete">DEL</button>
-                <button class="number-key note-key" data-value="note">NOTE</button>
-                <button class="number-key clear-key" data-value="clear">CLEAR</button>
+            <div class="keyboard" id="keyboard">
+                <div class="keyboard-row">
+                    <button class="key number-key" data-key="1">1</button>
+                    <button class="key number-key" data-key="2">2</button>
+                    <button class="key number-key" data-key="3">3</button>
+                    <button class="key special-key" data-key="DELETE">DEL</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key number-key" data-key="4">4</button>
+                    <button class="key number-key" data-key="5">5</button>
+                    <button class="key number-key" data-key="6">6</button>
+                    <button class="key special-key" data-key="CLEAR">CLR</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="key number-key" data-key="7">7</button>
+                    <button class="key number-key" data-key="8">8</button>
+                    <button class="key number-key" data-key="9">9</button>
+                    <button class="key special-key" data-key="NOTE">NOTE</button>
+                </div>
             </div>
         </div>
         
-        <!-- Footer -->
         <div class="footer">
-            <p>built with 💜 | <a href="mailto:hello@todayku.com">contact me</a> | <a href="#" id="how-to-play">how to play</a></p>
+            <p>built with 💜 | <a href="mailto:hello@todayku.day">contact me</a> | <a href="#" id="how-to-play">how to play</a></p>
         </div>
     </div>
-    
-    <!-- Modals -->
-    <!-- Welcome Modal -->
-    <div class="modal-overlay" id="welcome-modal">
-        <div class="modal">
-            <h2>Welcome to Todayku!</h2>
-            <p class="game-date" id="welcome-date"></p>
-            <div class="modal-content">
-                <p>Complete today's Sudoku puzzle as quickly as you can.</p>
-                <div class="instructions">
-                    <p><strong>How to play:</strong></p>
-                    <ul>
-                        <li>Fill the grid so that every row, column, and 3×3 box contains the digits 1-9.</li>
-                        <li>Each puzzle has only one solution.</li>
-                        <li>The timer starts when you click "Let's Go".</li>
-                    </ul>
-                </div>
-                <button class="primary-button" id="start-game">Let's Go</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Success Modal -->
-    <div class="modal-overlay" id="success-modal">
-        <div class="modal">
-            <h2>Puzzle Complete!</h2>
-            <p class="game-date" id="success-date"></p>
-            <div class="modal-content">
-                <p>You solved today's Sudoku in <span id="completion-time">00:00</span></p>
-                
-                <div class="result-graph">
-                    <div id="performance-emoji"></div>
-                </div>
-                
-                <div class="share-container">
-                    <div class="share-result" id="share-result"></div>
-                    <button class="primary-button" id="share-button">Share Result</button>
-                </div>
-                
-                <button class="secondary-button" id="close-success">Close</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- How to Play Modal -->
-    <div class="modal-overlay" id="how-to-play-modal">
-        <div class="modal">
-            <h2>How to Play</h2>
-            <div class="modal-content">
-                <p>Todayku is a daily Sudoku puzzle game:</p>
-                <ul>
-                    <li>Fill the 9×9 grid with digits 1-9.</li>
-                    <li>Each row, column, and 3×3 box must contain each digit exactly once.</li>
-                    <li>Some cells are pre-filled to give you a starting point.</li>
-                    <li>Complete the puzzle as quickly as you can!</li>
-                    <li>A new puzzle is available each day.</li>
-                </ul>
-                <p><strong>Tips:</strong></p>
-                <ul>
-                    <li>On mobile, use the number pad below the grid.</li>
-                    <li>On desktop, click a cell and type a number.</li>
-                    <li>The timer pauses if you switch tabs or minimize the window.</li>
-                </ul>
-                <button class="secondary-button" id="close-how-to-play">Close</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Share Copied Notification -->
-    <div class="notification" id="share-notification">
-        <p>Result copied to clipboard!</p>
-    </div>
-    
+
     <!-- Scripts -->
     <script src="sudoku.js"></script>
-    <script src="confetti.js"></script>
-    <script src="app.js"></script>
+    <script src="todayku.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => {
+                        console.log('Service worker registered!', reg);
+                    })
+                    .catch(err => {
+                        console.log('Service worker registration failed:', err);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
