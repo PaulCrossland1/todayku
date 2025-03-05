@@ -97,7 +97,7 @@
   
   /* Game Container */
   .game-container {
-    max-width: 550px;
+    max-width: 450px;
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -150,9 +150,9 @@
   /* Sudoku Grid */
   .sudoku-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 450px; /* Make the grid smaller */
     aspect-ratio: 1/1;
-    margin-bottom: var(--spacing-md);
+    margin: 0 auto var(--spacing-md);
   }
   
   .sudoku-grid {
@@ -165,6 +165,7 @@
     border: 2px solid var(--color-text);
     border-radius: var(--radius-md);
     overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .sudoku-cell {
@@ -172,7 +173,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(var(--font-size-xl) * 0.9);
+    font-size: calc(var(--font-size-xl) * 0.8); /* Slightly smaller font */
     font-weight: bold;
     cursor: pointer;
     border: 1px solid var(--color-border);
@@ -231,8 +232,8 @@
     grid-template-rows: repeat(4, 1fr);
     gap: var(--spacing-sm);
     width: 100%;
-    max-width: 320px;
-    margin-top: var(--spacing-md);
+    max-width: 350px;
+    margin: var(--spacing-md) auto 0;
   }
   
   .number-key {
@@ -444,11 +445,12 @@
   /* Hide number pad on desktop by default */
   @media (min-width: 768px) {
     .number-pad {
-      display: none;
+      display: grid; /* Always show number pad */
+      max-width: 350px;
     }
     
     .sudoku-container {
-      max-width: 450px;
+      max-width: 400px;
     }
   }
   
