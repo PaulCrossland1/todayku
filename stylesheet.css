@@ -60,6 +60,7 @@ html, body {
   padding: 0;
   overflow-x: hidden;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -193,6 +194,7 @@ ul {
   border: 1px solid var(--color-border);
   user-select: none;
   transition: background-color var(--transition-quick);
+  touch-action: manipulation;
 }
 
 /* Styling for 3x3 grid separators */
@@ -231,6 +233,7 @@ ul {
   grid-template-rows: repeat(3, 1fr);
   height: 100%;
   width: 100%;
+  padding: 1px;
 }
 
 .note {
@@ -530,36 +533,30 @@ ul {
     min-height: 500px;
     padding: 8px;
     box-shadow: none;
-    border-radius: 6px;
-  }
-  
-  .game-header {
-    margin-bottom: var(--spacing-xs);
-  }
-  
-  .game-timer {
-    font-size: var(--font-size-md);
-  }
-  
-  .game-body {
-    gap: var(--spacing-xs);
   }
   
   .sudoku-container {
-    margin-bottom: var(--spacing-xs);
-  }
-  
-  .sudoku-cell {
-    font-size: var(--font-size-sm);
+    max-width: 100%;
+    max-height: 60vh;
   }
   
   .number-pad {
+    margin-top: 8px;
     gap: 4px;
-    margin-top: var(--spacing-xs);
   }
   
   .number-key {
     height: 40px;
     padding: 0;
+  }
+  
+  .modal {
+    padding: var(--spacing-md);
+    max-height: 90vh;
+  }
+  
+  .footer {
+    padding-top: 6px;
+    margin-top: 8px;
   }
 }

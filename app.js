@@ -48,12 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
     
     function init() {
-        // Ensure proper viewport height on mobile
-        setVhProperty();
-        
-        // Handle resize events for mobile browsers
-        window.addEventListener('resize', handleResize);
-        
         // Show welcome modal when the page loads
         showModal(welcomeModal);
         
@@ -66,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('close-how-to-play').addEventListener('click', () => hideModal(howToPlayModal));
         document.getElementById('close-success').addEventListener('click', () => hideModal(successModal));
         shareButton.addEventListener('click', shareResult);
+        
+        // Handle window resize
+        window.addEventListener('resize', adjustLayout);
         
         // Number pad event listeners
         const numberKeys = document.querySelectorAll('.number-key');
@@ -93,25 +90,29 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Keyboard event listeners
         document.addEventListener('keydown', handleKeyDown);
+    }
+    
+    function adjustLayout() {
+        // This function will handle any necessary adjustments for different screen sizes
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        const gameContainer = document.querySelector('.game-container');
+        const sudokuContainer = document.querySelector('.sudoku-container');
         
-        // Prevent zoom on double tap for mobile
-        document.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-    }
-    
-    // Handle mobile viewport issues
-    function setVhProperty() {
-        // Set a CSS variable for viewport height that works on mobile browsers
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-    
-    function handleResize() {
-        // Update viewport height on resize
-        setVhProperty();
+        // Apply different styles based on viewport size
+        if (viewportHeight < 600) {
+            // Extra small screens
+            gameContainer.style.padding = '6px';
+            sudokuContainer.style.maxHeight = '50vh';
+        } else if (viewportHeight < 800) {
+            // Small screens
+            gameContainer.style.padding = '8px';
+            sudokuContainer.style.maxHeight = '60vh';
+        } else {
+            // Regular screens
+            gameContainer.style.padding = '12px';
+            sudokuContainer.style.maxHeight = 'none';
+        }
     }
     
     function generateDailyPuzzle() {
@@ -151,6 +152,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create the grid UI
         createSudokuGrid();
+        
+        // Adjust layout for current screen size
+        adjustLayout();
         
         // Start the timer
         startTimer();
@@ -555,4 +559,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }));
         }, 250);
     }
+    
+    // Call adjustLayout on initial load to ensure correct sizing
+    adjustLayout();
 });
