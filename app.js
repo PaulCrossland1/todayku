@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let playerBoard = [];
     let originalBoard = [];
     
-    // Today's game number (days since game started - Jan 1, 2023)
-    const gameStartDate = new Date(2023, 0, 1); // Jan 1, 2023
+    // Today's game number (days since game started - Jan 1, 2025)
+    const gameStartDate = new Date(2025, 0, 1); // Jan 1, 2025
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const gameNumber = Math.floor((today - gameStartDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (welcomeDateElement) welcomeDateElement.textContent = formattedDate;
     if (successDateElement) successDateElement.textContent = formattedDate;
-    if (gameDateElement) gameDateElement.textContent = `Puzzle #${gameNumber} · ${formattedDate}`;
+    if (gameDateElement) gameDateElement.textContent = `Puzzle #${gameNumber} | ${formattedDate}`;
     
     // Initialize game on load
     init();
