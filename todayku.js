@@ -1,4 +1,79 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Function to ensure keyboard is fully visible
+    function ensureKeyboardVisibility() {
+        const gameContainer = document.querySelector('.game-container');
+        const keyboard = document.getElementById('keyboard');
+        
+        // Ensure the game container is scrollable when needed
+        function checkKeyboardVisibility() {
+            // Get viewport height
+            const viewportHeight = window.innerHeight;
+            // Get bottom of keyboard position relative to viewport
+            const keyboardRect = keyboard.getBoundingClientRect();
+            const keyboardBottom = keyboardRect.bottom;
+            
+            // If keyboard extends beyond viewport, scroll to make it visible
+            if (keyboardBottom > viewportHeight) {
+                // Calculate how much to scroll
+                const scrollAmount = keyboardBottom - viewportHeight + 10; // Add 10px padding
+                // Smooth scroll to show keyboard
+                window.scrollBy({
+                    top: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Check visibility on initial load and window resize
+        window.addEventListener('load', checkKeyboardVisibility);
+        window.addEventListener('resize', checkKeyboardVisibility);
+        
+        // Also check when a cell is clicked, as this often means keyboard input is needed
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.sudoku-cell')) {
+                // Small delay to ensure UI has updated
+                setTimeout(checkKeyboardVisibility, 100);
+            }
+        });
+        
+        // Handle orientation changes specifically
+        window.addEventListener('orientationchange', function() {
+            // Wait for orientation change to complete
+            setTimeout(checkKeyboardVisibility, 300);
+        });
+    }
+
+    // Enhanced mobile experience for iOS Safari
+    function enhanceMobileExperience() {
+        // Prevent bounce/elastic scrolling on iOS
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.game-container')) {
+                // Allow scrolling within game container
+                e.stopPropagation();
+            } else {
+                // Prevent bounce scrolling on body
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Fix for iOS Safari viewport height issues
+        function setViewportHeight() {
+            // Set a CSS variable with the viewport height
+            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+        
+        // Set initial height and update on resize
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setViewportHeight, 300);
+        });
+    }
+
+    // Call the functions
+    ensureKeyboardVisibility();
+    enhanceMobileExperience();
+    
     // Game variables
     let gameBoard = null;                    // The current game board
     let solution = null;                     // Solution to the current game
@@ -702,6 +777,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create text for share message
         const formattedTime = formatTime(timeInSeconds);
+        const formattedDate = getFormattedDate();
         const shareText = `Todayku ${formattedDate} - ${formattedTime} ${performanceEmoji}\nhttps://todayku.com`;
         
         // Configure message text
@@ -857,4 +933,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Save game state periodically
     setInterval(saveGame, 30000); // Every 30 seconds
-});
+})

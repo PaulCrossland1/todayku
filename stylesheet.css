@@ -50,6 +50,9 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 16px;
   margin: 0 auto;
+  /* Make game container scrollable when needed */
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 .game-header {
@@ -522,9 +525,137 @@ h1 {
     font-size: 0.65rem;
   }
 }
-.key[data-key="NOTE"].active {
-  background-color: var(--success-color);
-  color: white;
-  transform: scale(0.98);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+
+/* Enhanced mobile experience styles */
+@media (max-height: 750px) {
+  .game-container {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+  
+  .game-date {
+    margin: 4px 0 10px;
+    font-size: 0.9rem;
+  }
+  
+  .game-body {
+    padding: 0 4px;
+  }
+  
+  .sudoku-container {
+    margin-bottom: 10px;
+    padding: 5px 0;
+  }
+  
+  /* Make the sudoku grid slightly smaller on very small screens */
+  .sudoku-grid {
+    width: min(100%, 330px);
+    height: min(100%, 330px);
+  }
+  
+  /* Make keyboard slightly more compact */
+  .keyboard {
+    margin-top: 5px;
+  }
+  
+  .keyboard-row {
+    margin-bottom: 6px;
+    gap: 6px;
+  }
+  
+  .key {
+    height: 48px;
+    font-size: 1.1rem;
+  }
+  
+  .footer {
+    padding: 10px 0;
+    margin-top: 3px;
+  }
+}
+
+/* Even more compact for very small screens */
+@media (max-height: 650px) {
+  .game-container {
+    padding: 8px;
+  }
+  
+  h1 {
+    font-size: 1.3rem;
+  }
+  
+  .game-date {
+    font-size: 0.8rem;
+    margin: 2px 0 8px;
+  }
+  
+  .sudoku-grid {
+    width: min(100%, 300px);
+    height: min(100%, 300px);
+  }
+  
+  .key {
+    height: 42px;
+    font-size: 1rem;
+  }
+  
+  .keyboard-row {
+    margin-bottom: 5px;
+    gap: 5px;
+  }
+  
+  .footer {
+    padding: 8px 0;
+    font-size: 0.75rem;
+  }
+}
+
+/* Extra small devices with critical space constraints */
+@media (max-height: 550px) {
+  body {
+    padding: 5px;
+  }
+  
+  .game-container {
+    padding: 6px;
+  }
+  
+  h1 {
+    font-size: 1.2rem;
+  }
+  
+  .game-date {
+    font-size: 0.7rem;
+    margin: 2px 0 6px;
+  }
+  
+  .sudoku-grid {
+    width: min(100%, 280px);
+    height: min(100%, 280px);
+  }
+  
+  .key {
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  
+  .keyboard-row {
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+  
+  /* Reduce footer size */
+  .footer {
+    padding: 6px 0;
+    font-size: 0.7rem;
+  }
+}
+
+/* iOS height fix - for variable that's created in JS */
+.ios-height-fix .game-container {
+  max-height: calc(var(--vh, 1vh) * 100);
 }

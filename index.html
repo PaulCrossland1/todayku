@@ -3,8 +3,12 @@
 <head>
     <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Todayku - A daily sudoku puzzle game that's quick and fun to play.">
+    
+    <!-- iOS PWA improvements -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
@@ -15,7 +19,7 @@
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://todayku.com/">
+    <meta name="twitter:url" content="https://todayku.day/">
     <meta name="twitter:title" content="Todayku - Daily Sudoku Challenge">
     <meta name="twitter:description" content="Todayku - play todays sudoku puzzle now.">
     <meta name="twitter:image" content="https://todayku.com/og-image.png">
@@ -38,7 +42,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="stylesheet.css">
 </head>
-<body>
+<body class="ios-height-fix">
     <div class="game-container">
         <div class="game-header">
             <h1>TODAYKU</h1>
