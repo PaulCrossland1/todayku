@@ -53,6 +53,11 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: 'Space Mono', monospace;
   background-color: var(--color-background);
@@ -60,8 +65,6 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding: var(--spacing-md);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,11 +101,18 @@ ul {
 /* Game Container */
 .game-container {
   max-width: 450px;
-  width: 100%;
+  width: 95%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-md);
+  overflow: hidden;
+  height: auto;
+  max-height: 90vh;
 }
 
 /* Game Header */
@@ -111,20 +121,21 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .game-header h1 {
   font-size: var(--font-size-2xl);
   font-weight: bold;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 .game-timer {
   font-size: var(--font-size-lg);
   font-weight: bold;
   color: var(--color-primary);
-  background-color: white;
+  background-color: var(--color-background);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -132,9 +143,9 @@ ul {
 
 /* Game Date */
 .game-date {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   color: var(--color-text-light);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
@@ -144,15 +155,15 @@ ul {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
+  overflow: hidden;
 }
 
 /* Sudoku Grid */
 .sudoku-container {
   width: 100%;
-  max-width: 450px; /* Make the grid smaller */
   aspect-ratio: 1/1;
-  margin: 0 auto var(--spacing-md);
+  margin: 0 auto var(--spacing-sm);
 }
 
 .sudoku-grid {
@@ -165,7 +176,7 @@ ul {
   border: 2px solid var(--color-text);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sudoku-cell {
@@ -173,7 +184,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(var(--font-size-xl) * 0.8); /* Slightly smaller font */
+  font-size: calc(var(--font-size-lg) * 0.8);
   font-weight: bold;
   cursor: pointer;
   border: 1px solid var(--color-border);
@@ -210,18 +221,19 @@ ul {
   background-color: var(--color-cell-error);
 }
 
-.sudoku-cell.notes {
+.notes-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  font-size: var(--font-size-xs);
-  padding: 2px;
+  width: 100%;
+  height: 100%;
 }
 
-.sudoku-cell .note {
+.note {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: var(--font-size-xs);
   color: var(--color-cell-note);
 }
 
@@ -230,19 +242,18 @@ ul {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   width: 100%;
-  max-width: 350px;
-  margin: var(--spacing-md) auto 0;
+  margin-top: var(--spacing-sm);
 }
 
 .number-key {
-  padding: var(--spacing-md);
-  font-size: var(--font-size-lg);
-  background-color: white;
+  padding: var(--spacing-xs);
+  font-size: var(--font-size-md);
+  background-color: var(--color-background);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .number-key:hover {
@@ -251,11 +262,11 @@ ul {
 
 .number-key:active {
   transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
 .delete-key, .note-key, .clear-key {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   grid-column: span 1;
 }
 
@@ -266,11 +277,13 @@ ul {
 
 /* Footer */
 .footer {
-  margin-top: var(--spacing-xl);
   width: 100%;
   text-align: center;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-text-light);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
 }
 
 /* Modals */
@@ -300,7 +313,9 @@ ul {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   width: 90%;
-  max-width: 500px;
+  max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   transform: translateY(20px);
   transition: transform var(--transition-normal);
@@ -374,7 +389,7 @@ ul {
 }
 
 #performance-emoji {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   line-height: 1;
 }
 
@@ -391,7 +406,7 @@ ul {
   font-size: var(--font-size-sm);
   white-space: pre-wrap;
   word-break: break-word;
-  max-height: 150px;
+  max-height: 100px;
   overflow-y: auto;
 }
 
@@ -420,37 +435,41 @@ ul {
     --font-size-xs: 10px;
     --font-size-sm: 12px;
     --font-size-md: 14px;
-    --font-size-lg: 18px;
-    --font-size-xl: 20px;
-    --font-size-2xl: 28px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-2xl: 24px;
+  }
+  
+  .game-container {
+    padding: var(--spacing-sm);
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    justify-content: space-between;
   }
   
   .sudoku-cell {
-    font-size: var(--font-size-lg);
-  }
-  
-  .number-pad {
-    max-width: 100%;
+    font-size: var(--font-size-md);
   }
   
   .number-key {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+  }
+  
+  .delete-key, .note-key, .clear-key {
+    font-size: var(--font-size-xs);
   }
   
   .modal {
     padding: var(--spacing-md);
+    max-height: 80vh;
   }
 }
 
-/* Hide number pad on desktop by default */
-@media (min-width: 768px) {
-  .number-pad {
-    display: grid; /* Always show number pad */
-    max-width: 350px;
-  }
-  
-  .sudoku-container {
-    max-width: 400px;
+@media (min-width: 481px) and (max-width: 768px) {
+  .game-container {
+    max-height: 95vh;
   }
 }
 
