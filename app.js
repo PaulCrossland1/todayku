@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
     
     function init() {
+        // Ensure proper viewport height on mobile
+        setVhProperty();
+        
+        // Handle resize events for mobile browsers
+        window.addEventListener('resize', handleResize);
+        
         // Show welcome modal when the page loads
         showModal(welcomeModal);
         
@@ -87,6 +93,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Keyboard event listeners
         document.addEventListener('keydown', handleKeyDown);
+        
+        // Prevent zoom on double tap for mobile
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    }
+    
+    // Handle mobile viewport issues
+    function setVhProperty() {
+        // Set a CSS variable for viewport height that works on mobile browsers
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    function handleResize() {
+        // Update viewport height on resize
+        setVhProperty();
     }
     
     function generateDailyPuzzle() {
@@ -531,5 +556,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 250);
     }
 });
-
-// Nothing needed here - we're using a simpler approach in the generateDailyPuzzle function
