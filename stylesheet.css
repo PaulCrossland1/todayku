@@ -659,3 +659,68 @@ h1 {
 .ios-height-fix .game-container {
   max-height: calc(var(--vh, 1vh) * 100);
 }
+
+/* Add these styles to your stylesheet.css file */
+
+/* Fix for very small screens to ensure keyboard is fully visible */
+@media (max-height: 680px) {
+  .keyboard {
+    margin-bottom: 5px;
+  }
+  
+  .key {
+    height: 45px;
+    font-size: 1rem;
+  }
+  
+  .keyboard-row {
+    margin-bottom: 5px;
+    gap: 5px;
+  }
+  
+  .footer {
+    padding: 8px 0;
+  }
+}
+
+/* Add a more aggressive reduction for extra small screens */
+@media (max-height: 600px) {
+  .game-container {
+    padding: 5px;
+  }
+  
+  .game-header {
+    padding-bottom: 5px;
+  }
+  
+  .game-date {
+    margin: 2px 0 5px;
+  }
+  
+  .sudoku-container {
+    margin-bottom: 8px;
+  }
+  
+  .key {
+    height: 38px;
+    font-size: 0.9rem;
+  }
+  
+  .keyboard-row {
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+  
+  .footer {
+    padding: 5px 0;
+    font-size: 0.7rem;
+  }
+}
+
+/* Final fallback for extremely small screens */
+@media (max-height: 500px) {
+  .key {
+    height: 30px;
+    font-size: 0.8rem;
+  }
+}

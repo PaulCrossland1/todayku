@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const gameContainer = document.querySelector('.game-container');
         const keyboard = document.getElementById('keyboard');
         
-        // Ensure the game container is scrollable when needed
         function checkKeyboardVisibility() {
             // Get viewport height
             const viewportHeight = window.innerHeight;
@@ -21,6 +20,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: scrollAmount,
                     behavior: 'smooth'
                 });
+            }
+            
+            // Add this: Check if keyboard is fully visible when a cell is selected
+            // This helps ensure keyboard visibility on initial cell selection
+            if (selectedCell) {
+                setTimeout(() => {
+                    const updatedKeyboardRect = keyboard.getBoundingClientRect();
+                    if (updatedKeyboardRect.bottom > viewportHeight) {
+                        window.scrollBy({
+                            top: updatedKeyboardRect.bottom - viewportHeight + 10,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 50);
             }
         }
         
