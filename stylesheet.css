@@ -234,9 +234,6 @@ h1 {
 
 .key[data-key="NOTE"].active {
   background-color: var(--success-color);
-  color: white;
-  transform: scale(0.98);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .footer {

@@ -112,18 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
         cellNotes = gameData.cellNotes;
         startTime = gameData.elapsedTime ? Date.now() - (gameData.elapsedTime * 1000) : Date.now();
         gameComplete = gameData.complete || false;
-        isNoteMode = gameData.isNoteMode || false;
         
         // Create the UI for the game
         createSudokuGrid(gameBoard);
-        
-        // Restore note mode state if active
-        if (isNoteMode) {
-            const noteButton = document.querySelector('.key[data-key="NOTE"]');
-            if (noteButton) {
-                noteButton.classList.add('active');
-            }
-        }
         
         // Start the timer if the game isn't complete
         if (!gameComplete) {
@@ -164,8 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             userInputs: userInputs,
             cellNotes: cellNotes,
             elapsedTime: elapsedTime,
-            complete: gameComplete,
-            isNoteMode: isNoteMode
+            complete: gameComplete
         };
         
         localStorage.setItem('todaykuDaily', JSON.stringify(gameData));
