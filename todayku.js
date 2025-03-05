@@ -113,8 +113,19 @@ document.addEventListener('DOMContentLoaded', function() {
         startTime = gameData.elapsedTime ? Date.now() - (gameData.elapsedTime * 1000) : Date.now();
         gameComplete = gameData.complete || false;
         
+        // Restore note mode if it was saved
+        isNoteMode = gameData.isNoteMode || false;
+        
         // Create the UI for the game
         createSudokuGrid(gameBoard);
+        
+        // Update the note button state if in note mode
+        if (isNoteMode) {
+            const noteButton = document.querySelector('.key[data-key="NOTE"]');
+            if (noteButton) {
+                noteButton.classList.add('active');
+            }
+        }
         
         // Start the timer if the game isn't complete
         if (!gameComplete) {
@@ -155,7 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
             userInputs: userInputs,
             cellNotes: cellNotes,
             elapsedTime: elapsedTime,
-            complete: gameComplete
+            complete: gameComplete,
+            isNoteMode: isNoteMode
         };
         
         localStorage.setItem('todaykuDaily', JSON.stringify(gameData));
@@ -398,6 +410,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear selection
         selectedCell = null;
         
+        // Reset note mode
+        isNoteMode = false;
+        const noteButton = document.querySelector('.key[data-key="NOTE"]');
+        if (noteButton) {
+            noteButton.classList.remove('active');
+        }
+
         // Save the cleared state
         saveGame();
     }
@@ -763,11 +782,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const keyValue = this.getAttribute('data-key');
         
-        // Add visual feedback
-        this.classList.add('active');
-        setTimeout(() => {
-            this.classList.remove('active');
-        }, 150);
+        // Add visual feedback, but handle NOTE button specially
+        if (keyValue !== 'NOTE') {
+            // For non-NOTE buttons, add temporary active class
+            this.classList.add('active');
+            setTimeout(() => {
+                this.classList.remove('active');
+            }, 150);
+        } else {
+            // For NOTE button, the active class will be toggled in handleKeyInput
+            // We don't add or remove it here with a timeout
+        }
         
         handleKeyInput(keyValue);
     }
@@ -791,10 +816,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else if (key === 'Delete' || key === 'Backspace') {
             handleKeyInput('DELETE');
+            
+            // Add visual feedback
+            const keyElement = document.querySelector(`.key[data-key="DELETE"]`);
+            if (keyElement) {
+                keyElement.classList.add('active');
+                setTimeout(() => {
+                    keyElement.classList.remove('active');
+                }, 150);
+            }
         } else if (key === 'Escape') {
             handleKeyInput('CLEAR');
+            
+            // Add visual feedback
+            const keyElement = document.querySelector(`.key[data-key="CLEAR"]`);
+            if (keyElement) {
+                keyElement.classList.add('active');
+                setTimeout(() => {
+                    keyElement.classList.remove('active');
+                }, 150);
+            }
         } else if (key === 'n' || key === 'N') {
             handleKeyInput('NOTE');
+            // Note: visual feedback for NOTE is handled inside handleKeyInput
         }
     });
     

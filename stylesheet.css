@@ -213,7 +213,7 @@ h1 {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   touch-action: manipulation;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color 0.2s, transform 0.1s, color 0.2s, box-shadow 0.2s;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -232,8 +232,12 @@ h1 {
   color: white;
 }
 
+/* Specific styles for NOTE button in active state */
 .key[data-key="NOTE"].active {
   background-color: var(--success-color);
+  color: white;
+  transform: scale(0.98);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .footer {
@@ -518,5 +522,9 @@ h1 {
     font-size: 0.65rem;
   }
 }
-
-/* Add manifest file for PWA capabilities */
+.key[data-key="NOTE"].active {
+  background-color: var(--success-color);
+  color: white;
+  transform: scale(0.98);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
