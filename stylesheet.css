@@ -1,6 +1,7 @@
 /* 
  * Todayku Styles
  * A daily, quick Sudoku game
+ * Modified to prevent scrolling while maintaining original design
  */
 
 /* CSS Variables */
@@ -44,16 +45,23 @@
     /* Animation */
     --transition-quick: 150ms ease;
     --transition-normal: 300ms ease;
-  }
-  
-  /* Base Styles */
-  * {
+}
+
+/* Base Styles */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
-  
-  body {
+}
+
+html, body {
+    /* Prevent scrolling */
+    overflow: hidden;
+    height: 100%;
+    max-height: 100vh;
+}
+
+body {
     font-family: 'Space Mono', monospace;
     background-color: var(--color-background);
     color: var(--color-text);
@@ -66,61 +74,63 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-  
-  h1, h2, h3 {
+}
+
+h1, h2, h3 {
     color: var(--color-primary);
     line-height: 1.2;
-  }
-  
-  a {
+}
+
+a {
     color: var(--color-primary);
     text-decoration: none;
-  }
-  
-  a:hover {
+}
+
+a:hover {
     text-decoration: underline;
-  }
-  
-  button {
+}
+
+button {
     cursor: pointer;
     font-family: 'Space Mono', monospace;
     font-weight: bold;
     border: none;
     transition: var(--transition-quick);
-  }
-  
-  ul {
+}
+
+ul {
     list-style-position: inside;
     margin-bottom: var(--spacing-md);
-  }
-  
-  /* Game Container */
-  .game-container {
+}
+
+/* Game Container */
+.game-container {
     max-width: 450px;
     width: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  /* Game Header */
-  .game-header {
+    justify-content: space-between;
+    height: 100vh;
+}
+
+/* Game Header */
+.game-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-md);
-  }
-  
-  .game-header h1 {
+}
+
+.game-header h1 {
     font-size: var(--font-size-2xl);
     font-weight: bold;
     letter-spacing: 1px;
-  }
-  
-  .game-timer {
+}
+
+.game-timer {
     font-size: var(--font-size-lg);
     font-weight: bold;
     color: var(--color-primary);
@@ -128,34 +138,35 @@
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-sm);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Game Date */
-  .game-date {
+}
+
+/* Game Date */
+.game-date {
     font-size: var(--font-size-md);
     color: var(--color-text-light);
     margin-bottom: var(--spacing-md);
     text-align: center;
-  }
-  
-  /* Game Body */
-  .game-body {
+}
+
+/* Game Body */
+.game-body {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-md);
-  }
-  
-  /* Sudoku Grid */
-  .sudoku-container {
+    flex: 1;
+}
+
+/* Sudoku Grid */
+.sudoku-container {
     width: 100%;
-    max-width: 450px; /* Make the grid smaller */
+    max-width: 450px;
     aspect-ratio: 1/1;
     margin: 0 auto var(--spacing-md);
-  }
-  
-  .sudoku-grid {
+}
+
+.sudoku-grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
@@ -166,67 +177,68 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sudoku-cell {
+}
+
+.sudoku-cell {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(var(--font-size-xl) * 0.8); /* Slightly smaller font */
+    font-size: calc(var(--font-size-xl) * 0.8);
     font-weight: bold;
     cursor: pointer;
     border: 1px solid var(--color-border);
     user-select: none;
     transition: background-color var(--transition-quick);
-  }
-  
-  /* Styling for 3x3 grid separators */
-  .sudoku-cell[data-col="3"],
-  .sudoku-cell[data-col="6"] {
+}
+
+/* Styling for 3x3 grid separators */
+.sudoku-cell[data-col="3"],
+.sudoku-cell[data-col="6"] {
     border-left: 2px solid var(--color-text);
-  }
-  
-  .sudoku-cell[data-row="3"],
-  .sudoku-cell[data-row="6"] {
+}
+
+.sudoku-cell[data-row="3"],
+.sudoku-cell[data-row="6"] {
     border-top: 2px solid var(--color-text);
-  }
-  
-  .sudoku-cell.selected {
+}
+
+.sudoku-cell.selected {
     background-color: var(--color-cell-highlight);
     box-shadow: inset 0 0 0 2px var(--color-primary);
-  }
-  
-  .sudoku-cell.related {
+}
+
+.sudoku-cell.related {
     background-color: var(--color-cell-related);
-  }
-  
-  .sudoku-cell.prefilled {
+}
+
+.sudoku-cell.prefilled {
     background-color: var(--color-cell-prefilled);
     cursor: not-allowed;
-  }
-  
-  .sudoku-cell.error {
+}
+
+.sudoku-cell.error {
     background-color: var(--color-cell-error);
-  }
-  
-  .sudoku-cell.notes {
+}
+
+.sudoku-cell .notes-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
     font-size: var(--font-size-xs);
-    padding: 2px;
-  }
-  
-  .sudoku-cell .note {
+}
+
+.sudoku-cell .note {
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--color-cell-note);
-  }
-  
-  /* Number Pad */
-  .number-pad {
+}
+
+/* Number Pad */
+.number-pad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -234,47 +246,48 @@
     width: 100%;
     max-width: 350px;
     margin: var(--spacing-md) auto 0;
-  }
-  
-  .number-key {
+}
+
+.number-key {
     padding: var(--spacing-md);
     font-size: var(--font-size-lg);
     background-color: white;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .number-key:hover {
+}
+
+.number-key:hover {
     background-color: var(--color-cell-highlight);
-  }
-  
-  .number-key:active {
+}
+
+.number-key:active {
     transform: translateY(1px);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  
-  .delete-key, .note-key, .clear-key {
+}
+
+.delete-key, .note-key, .clear-key {
     font-size: var(--font-size-sm);
     grid-column: span 1;
-  }
-  
-  .note-key.active {
+}
+
+.note-key.active {
     background-color: var(--color-primary-light);
     color: white;
-  }
-  
-  /* Footer */
-  .footer {
-    margin-top: var(--spacing-xl);
+}
+
+/* Footer */
+.footer {
     width: 100%;
     text-align: center;
     font-size: var(--font-size-sm);
     color: var(--color-text-light);
-  }
-  
-  /* Modals */
-  .modal-overlay {
+    padding: var(--spacing-sm) 0;
+    margin-top: auto;
+}
+
+/* Modals */
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -288,14 +301,14 @@
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-normal);
-  }
-  
-  .modal-overlay.active {
+}
+
+.modal-overlay.active {
     opacity: 1;
     visibility: visible;
-  }
-  
-  .modal {
+}
+
+.modal {
     background-color: white;
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
@@ -304,32 +317,32 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     transform: translateY(20px);
     transition: transform var(--transition-normal);
-  }
-  
-  .modal-overlay.active .modal {
+}
+
+.modal-overlay.active .modal {
     transform: translateY(0);
-  }
-  
-  .modal h2 {
+}
+
+.modal h2 {
     text-align: center;
     margin-bottom: var(--spacing-md);
     color: var(--color-primary);
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     margin-top: var(--spacing-md);
-  }
-  
-  .modal p {
+}
+
+.modal p {
     margin-bottom: var(--spacing-md);
-  }
-  
-  .instructions {
+}
+
+.instructions {
     margin: var(--spacing-md) 0;
-  }
-  
-  /* Buttons */
-  .primary-button {
+}
+
+/* Buttons */
+.primary-button {
     background-color: var(--color-primary);
     color: white;
     font-size: var(--font-size-md);
@@ -338,18 +351,18 @@
     width: 100%;
     margin-top: var(--spacing-md);
     box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
-  }
-  
-  .primary-button:hover {
+}
+
+.primary-button:hover {
     background-color: var(--color-primary-dark);
-  }
-  
-  .primary-button:active {
+}
+
+.primary-button:active {
     transform: translateY(1px);
     box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
-  }
-  
-  .secondary-button {
+}
+
+.secondary-button {
     background-color: var(--color-background);
     color: var(--color-text);
     font-size: var(--font-size-md);
@@ -358,32 +371,32 @@
     width: 100%;
     margin-top: var(--spacing-md);
     border: 1px solid var(--color-border);
-  }
-  
-  .secondary-button:hover {
+}
+
+.secondary-button:hover {
     background-color: var(--color-border);
-  }
-  
-  /* Result Graph */
-  .result-graph {
+}
+
+/* Result Graph */
+.result-graph {
     background-color: var(--color-background);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
     margin: var(--spacing-md) 0;
     text-align: center;
-  }
-  
-  #performance-emoji {
+}
+
+#performance-emoji {
     font-size: var(--font-size-2xl);
     line-height: 1;
-  }
-  
-  /* Share Container */
-  .share-container {
+}
+
+/* Share Container */
+.share-container {
     margin-top: var(--spacing-md);
-  }
-  
-  .share-result {
+}
+
+.share-result {
     background-color: var(--color-background);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
@@ -393,10 +406,10 @@
     word-break: break-word;
     max-height: 150px;
     overflow-y: auto;
-  }
-  
-  /* Notification */
-  .notification {
+}
+
+/* Notification */
+.notification {
     position: fixed;
     bottom: -50px;
     left: 50%;
@@ -408,77 +421,102 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: bottom var(--transition-normal);
     z-index: 1100;
-  }
-  
-  .notification.show {
+}
+
+.notification.show {
     bottom: 20px;
-  }
-  
-  /* Media Queries */
-  @media (max-width: 480px) {
-    :root {
-      --font-size-xs: 10px;
-      --font-size-sm: 12px;
-      --font-size-md: 14px;
-      --font-size-lg: 18px;
-      --font-size-xl: 20px;
-      --font-size-2xl: 28px;
+}
+
+/* Media Queries */
+@media (max-width: 480px) {
+    body {
+        padding: var(--spacing-sm);
     }
     
-    .sudoku-cell {
-      font-size: var(--font-size-lg);
-    }
-    
-    .number-pad {
-      max-width: 100%;
-    }
-    
-    .number-key {
-      padding: var(--spacing-sm);
-    }
-    
-    .modal {
-      padding: var(--spacing-md);
-    }
-  }
-  
-  /* Hide number pad on desktop by default */
-  @media (min-width: 768px) {
-    .number-pad {
-      display: grid; /* Always show number pad */
-      max-width: 350px;
+    .game-container {
+        height: 100vh;
+        justify-content: space-between;
     }
     
     .sudoku-container {
-      max-width: 400px;
+        width: 100%;
+        max-width: 100%;
     }
-  }
-  
-  /* Animation Classes */
-  .fade-in {
+    
+    .number-pad {
+        max-width: 100%;
+    }
+    
+    .number-key {
+        padding: var(--spacing-sm);
+    }
+    
+    /* Reduce some spacing on mobile */
+    .game-header {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .game-date {
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* For taller devices */
+@media (min-height: 700px) {
+    .game-body {
+        justify-content: center;
+    }
+}
+
+/* For very short devices */
+@media (max-height: 600px) {
+    :root {
+        --spacing-md: 8px;
+        --spacing-lg: 12px;
+    }
+    
+    .game-header {
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .game-date {
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .number-key {
+        padding: var(--spacing-xs);
+    }
+    
+    .footer {
+        padding: var(--spacing-xs) 0;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
     animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  .pop-in {
+}
+
+.pop-in {
     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  
-  @keyframes fadeIn {
+}
+
+@keyframes fadeIn {
     from {
-      opacity: 0;
+        opacity: 0;
     }
     to {
-      opacity: 1;
+        opacity: 1;
     }
-  }
-  
-  @keyframes popIn {
+}
+
+@keyframes popIn {
     from {
-      transform: scale(0.9);
-      opacity: 0;
+        transform: scale(0.9);
+        opacity: 0;
     }
     to {
-      transform: scale(1);
-      opacity: 1;
+        transform: scale(1);
+        opacity: 1;
     }
-  }
+}
