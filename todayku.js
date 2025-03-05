@@ -21,14 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper functions for date formatting and sharing
     function getFormattedDate() {
         const today = new Date();
-        const options = { month: 'short', day: 'numeric', year: 'numeric' };
-        return today.toLocaleDateString('en-US', options);
+        const options = { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
+        return today.toLocaleDateString('en-US', options) + ' UTC';
     }
     
     function getDayOfYear() {
         const now = new Date();
-        const start = new Date(now.getFullYear(), 0, 0);
-        const diff = now - start;
+        // Create date for Jan 1 of current year in UTC
+        const start = Date.UTC(now.getUTCFullYear(), 0, 0);
+        // Get current time in UTC
+        const nowUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+        const diff = nowUTC - start;
         const oneDay = 1000 * 60 * 60 * 24;
         return Math.floor(diff / oneDay);
     }
@@ -63,7 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Game initialization
     function initGame() {
         // Update date display
         updateDateDisplay();
@@ -75,8 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const savedDate = new Date(gameData.date);
             const today = new Date();
             
-            // Check if the saved game is from today
-            if (savedDate.toDateString() === today.toDateString()) {
+            // Check if the saved game is from today using UTC date
+            if (savedDate.getUTCDate() === today.getUTCDate() && 
+                savedDate.getUTCMonth() === today.getUTCMonth() && 
+                savedDate.getUTCFullYear() === today.getUTCFullYear()) {
                 loadSavedGame(gameData);
                 return;
             }
@@ -160,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const elapsedTime = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
         
         const gameData = {
-            date: new Date().toISOString(),
+            date: new Date().toISOString(), // This already uses UTC format
             board: gameBoard,
             solution: solution,
             userInputs: userInputs,
