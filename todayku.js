@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getFormattedDate() {
         const today = new Date();
         const options = { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
-        return today.toLocaleDateString('en-US', options) + ' UTC';
+        return today.toLocaleDateString('en-US', options) ;
     }
     
     function getDayOfYear() {
@@ -702,12 +702,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create text for share message
         const formattedTime = formatTime(timeInSeconds);
-        const shareText = `Todayku #${gameNumber} - ${formattedTime} ${performanceEmoji}\nhttps://todayku.day`;
+        const shareText = `Todayku ${formattedDate} - ${formattedTime} ${performanceEmoji}\nhttps://todayku.com`;
         
         // Configure message text
         const messageText = document.createElement('p');
         messageText.className = 'result-message';
-        messageText.textContent = `Puzzle #${gameNumber} completed in ${formattedTime}`;
+        messageText.textContent = `Todayku ${formattedDate} completed in ${formattedTime}\nhttps://todayku.com`;
         
         // Performance graph
         const performanceGraph = document.createElement('div');
