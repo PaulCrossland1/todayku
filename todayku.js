@@ -43,8 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Enhanced mobile experience for iOS Safari
     function enhanceMobileExperience() {
-
+        // Prevent bounce/elastic scrolling on iOS
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.game-container')) {
+                // Allow scrolling within game container
+                e.stopPropagation();
+            } else {
+                // Prevent bounce scrolling on body
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Fix for iOS Safari viewport height issues
         function setViewportHeight() {
             // Set a CSS variable with the viewport height
             document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
