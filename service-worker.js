@@ -11,7 +11,8 @@ const ASSETS_TO_CACHE = [
   '/favicon.png',
   '/apple-touch-icon.png',
   '/icon-192.png',
-  '/icon-512.png'
+  '/icon-512.png',
+  '/og-image.png',
 ];
 
 // Install event - cache assets
