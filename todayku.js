@@ -1,5 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to ensure keyboard is fully visible
+    // Add these seeded random functions
+    // Simple seeded random number generator
+    function seedRandom(seed) {
+        let state = seed;
+        
+        return function() {
+            state = (state * 9301 + 49297) % 233280;
+            return state / 233280;
+        };
+    }
+
+    // Override the _rand_range function in the sudoku library to use our seeded random
+    function overrideSudokuRandom(seed) {
+        const random = seedRandom(seed);
+        
+        // Store the original function
+        const originalRandRange = sudoku._rand_range;
+        
+        // Override with our seeded version
+        sudoku._rand_range = function(max, min) {
+            min = min || 0;
+            if(max) {
+                return Math.floor(random() * (max - min)) + min;
+            } else {
+                throw "Range undefined";
+            }
+        };
+        
+        // Return a function to restore the original if needed
+        return function() {
+            sudoku._rand_range = originalRandRange;
+        };
+    }
     function ensureKeyboardVisibility() {
         const gameContainer = document.querySelector('.game-container');
         const keyboard = document.getElementById('keyboard');
@@ -158,33 +190,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update date display
         updateDateDisplay();
         
-        // Check if there's a saved game for today
-        const savedGame = localStorage.getItem('todaykuDaily');
-        if (savedGame) {
-            const gameData = JSON.parse(savedGame);
-            const savedDate = new Date(gameData.date);
-            const today = new Date();
-            
-            // Check if the saved game is from today using UTC date
-            if (savedDate.getUTCDate() === today.getUTCDate() && 
-                savedDate.getUTCMonth() === today.getUTCMonth() && 
-                savedDate.getUTCFullYear() === today.getUTCFullYear()) {
-                loadSavedGame(gameData);
-                return;
-            }
-        }
-        
-        // Otherwise, create a new game
+        // Always create a new game, ignoring any saved state
         createNewGame();
     }
     
     function createNewGame() {
-        // Create a new game using the sudoku library
+        // Clear any previous state
+        userInputs = {};
+        cellNotes = {};
+        gameComplete = false;
+        isNoteMode = false;
+        selectedCell = null;
+        
         // Use the day of the year as a seed to ensure everyone gets the same puzzle
         const seed = getDayOfYear();
         
+        // Override the random number generator with our seeded version
+        const restoreRandom = overrideSudokuRandom(seed);
+        
         // Generate a new sudoku puzzle (always easy difficulty)
         gameBoard = sudoku.generate("easy");
+        
+        // Restore the original random function
+        restoreRandom();
         
         // Get the solution by solving the board
         solution = sudoku.solve(gameBoard);
@@ -192,8 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create the UI for the game
         createSudokuGrid(gameBoard);
         
-        // Show the intro modal
+        // Always show the intro modal
         showIntroModal();
+        
+        // Reset the timer
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
     }
     
     function loadSavedGame(gameData) {
@@ -561,12 +594,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Modal functions
     function showIntroModal() {
-        // Check if user has seen the tutorial before
-        const hasSeenTutorial = localStorage.getItem('todaykuTutorialSeen') === 'true';
-        if (hasSeenTutorial) {
-            startTimer();
-            return;
-        }
         
         // Create modal container
         const modalOverlay = document.createElement('div');
@@ -643,7 +670,6 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.onclick = () => {
             closeModal();
             startTimer();
-            localStorage.setItem('todaykuTutorialSeen', 'true');
         };
         
         modalFooter.appendChild(playButton);
@@ -943,7 +969,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the game
     initGame();
-    
-    // Save game state periodically
-    setInterval(saveGame, 30000); // Every 30 seconds
 })
